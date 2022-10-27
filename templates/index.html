@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load leaflet_tags %}
+<head>
+
+  {% block title %}<title>Test map</title>{% endblock %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <!-- Add additional CSS in static file -->
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  {% leaflet_js %}
+  {% leaflet_css %}
+    <style>
+        .leaflet-container { height: 100%; }
+    </style>
+    <script>
+        var dataurl = "/api/users/list/";
+
+        window.addEventListener("map:init", function (event) {
+            var map = event.detail.map;
+            // Download GeoJSON data with Ajax
+            fetch(dataurl)
+            .then(resp => resp.json())
+            .then(data => {
+                L.geoJson(data, {
+                onEachFeature: function onEachFeature(feature, layer) {
+                    var props = feature.properties;
+                    var content = `<h3>${props.user.username}</h3><p>${props.phone_number}</p>`;
+                    layer.bindPopup(content);
+                }}).addTo(map);
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div style="height: 100vh">
+        {% leaflet_map "main" %}
+    </div>
+</body>
+</html>
