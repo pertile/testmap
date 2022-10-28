@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .forms import UpdateProfileForm
 from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
 
 
 def index(request):
@@ -35,3 +36,17 @@ def listUsers(request):
     profiles = UserProfile.objects.all()
     serializer = ProfileSerializer(profiles, many=True)
     return Response(serializer.data)
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, f'Your account has been created. You can log in now!')    
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+
+    context = {'form': form}
+    return render(request, 'registration/register.html', context)

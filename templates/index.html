@@ -30,7 +30,10 @@
                 L.geoJson(data, {
                 onEachFeature: function onEachFeature(feature, layer) {
                     var props = feature.properties;
-                    var content = `<h3>${props.user.username}</h3><p>${props.phone_number}</p>`;
+                    var content = `<h3>${props.user.username}</h3>
+                        <p><b>Name:</b> ${props.user.last_name}, ${props.user.first_name}</p>
+                        <p><b>Phone number:</b> ${props.phone_number}</p>
+                        <p><b>Home address:</b> ${props.home_address}</p>`;
                     layer.bindPopup(content);
                 }}).addTo(map);
             });
@@ -40,6 +43,7 @@
 
 <body>
     <div style="height: 100vh">
+        <h3><a href="/accounts/login">Login</a> - <a href="/register">Register</a></h3>
         {% leaflet_map "main" %}
     </div>
 </body>
